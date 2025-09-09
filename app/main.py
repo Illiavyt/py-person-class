@@ -8,17 +8,19 @@ class Person:
 
 
 def create_person_list(people_list):
-    person_objects = []
+    Person.people.clear()
 
-    for pdata in people_list:
-        person = Person(pdata["name"], pdata["age"])
-        person_objects.append(person)
+    # Створюємо список об’єктів Person через list comprehension
+    person_objects = [Person(pdata["name"], pdata["age"]) for pdata in people_list]
 
+    # Встановлюємо wife/husband тільки якщо значення існує
     for pdata in people_list:
         person = Person.people[pdata["name"]]
-        if "wife" in pdata and pdata["wife"] is not None:
-            setattr(person, "wife", Person.people[pdata["wife"]])
-        if "husband" in pdata and pdata["husband"] is not None:
-            setattr(person, "husband", Person.people[pdata["husband"]])
+        wife_name = pdata.get("wife")
+        husband_name = pdata.get("husband")
+        if wife_name:
+            person.wife = Person.people[wife_name]
+        if husband_name:
+            person.husband = Person.people[husband_name]
 
     return person_objects
